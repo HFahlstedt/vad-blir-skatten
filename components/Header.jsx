@@ -17,6 +17,9 @@ const Header = () => (
                 <Link href="/salary">
                     <a className="navbar-item">Endast lön</a>
                 </Link>
+                <Link href="/benefit">
+                    <a className="navbar-item">Med förmån</a>
+                </Link>
             </div>
         </div>
     </nav>
