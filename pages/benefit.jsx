@@ -1,5 +1,5 @@
-import fetch from "isomorphic-unfetch";
 import { useState, useEffect } from "react";
+import api from "../services/api";
 import Layout from "../components/Layout";
 import InputField from "../components/InputField";
 import YearAndTableSelection from "../components/YearAndTableSelection";
@@ -14,28 +14,25 @@ const Benefit = () => {
 
   useEffect(() => {
     const fetchResult = async () => {
-      if (salary) {
-        const res = await fetch(
-          "https://us-central1-vad-blir-skatten-121416.cloudfunctions.net/vad-blir-skatten?" +
-            new URLSearchParams({
-              salary: salary + benefit,
-              tab: taxTable,
-              year: year
-            })
-        );
-
-        const json = await res.json();
-        console.log(json);
-
-        setResult({ ...json, salary, afterTax: salary - json.taxAmount, benefit });
-      }
+      const withoutBenefit = await api.fetchTaxAmount(salary, taxTable, year);
+      const fetchedData = await api.fetchTaxAmount(salary+benefit, taxTable, year);
+      
+      setResult({
+        ...withoutBenefit,
+        taxAmount: fetchedData.taxAmount,
+        afterTax: salary - fetchedData.taxAmount,
+        benefit,
+        cost: fetchedData.afterTax - withoutBenefit.afterTax 
+      });
     };
 
-    fetchResult();
+    if (salary > 0) {
+      fetchResult();
+    }
   }, [search]);
 
   return (
-    <Layout title="Endast lön">
+    <Layout title="Med förmån">
       <YearAndTableSelection
         year={year}
         onYearChanged={e => setYear(e.target.value)}
@@ -59,10 +56,11 @@ const Benefit = () => {
         Beräkna
       </button>
       <div className="section">
-        <p>Lön: {result ? result.salary : ''}</p>
-        <p>Skatt: {result ? result.taxAmount : ''}</p>
-        <p>Förmån: {result ? result.benefit : ''}</p>
-        <p>Nettolön: {result ? result.afterTax : ''}</p>
+        <p>Lön: {result ? result.salary : ""}</p>
+        <p>Skatt: {result ? result.taxAmount : ""}</p>
+        <p>Förmån: {result ? result.benefit : ""}</p>
+        <p>Nettolön: {result ? result.afterTax : ""}</p>
+        <p>Kostnad för förmån: {result ? result.cost : ''}</p>
       </div>
     </Layout>
   );

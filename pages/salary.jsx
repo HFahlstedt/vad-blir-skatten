@@ -1,5 +1,5 @@
-import fetch from "isomorphic-unfetch";
 import { useState, useEffect } from "react";
+import api from "../services/api";
 import Layout from "../components/Layout";
 import YearAndTableSelection from "../components/YearAndTableSelection";
 import InputField from "../components/InputField";
@@ -13,21 +13,13 @@ const Salary = () => {
 
   useEffect(() => {
     const fetchResult = async () => {
-      const res = await fetch(
-        "https://us-central1-vad-blir-skatten-121416.cloudfunctions.net/vad-blir-skatten?" +
-          new URLSearchParams({
-            salary: salary,
-            tab: taxTable,
-            year: year
-          })
-      );
-
-      const json = await res.json();
-      console.log(json);
-      setResult(json);
+      const fetchedData = await api.fetchTaxAmount(salary, taxTable, year);
+      setResult(fetchedData);
     };
 
-    fetchResult();
+    if (salary > 0) {
+      fetchResult();
+    }
   }, [search]);
 
   return (
