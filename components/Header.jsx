@@ -20,6 +20,9 @@ const Header = () => (
                 <Link href="/benefit">
                     <a className="navbar-item">Med förmån</a>
                 </Link>
+                <Link href="/raise">
+                    <a className="navbar-item">Efter löneförhöjning</a>
+                </Link>
             </div>
         </div>
     </nav>
