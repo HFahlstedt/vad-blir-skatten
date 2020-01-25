@@ -8,6 +8,7 @@ const Salary = () => {
   const [salary, setSalary] = useState(0);
   const [taxTable, setTaxTable] = useState(33);
   const [year, setYear] = useState(new Date().getFullYear());
+  const [isValid, setIsValid] = useState(true);
   const [search, setSearch] = useState({ salary, taxTable, year });
   const [result, setResult] = useState({ salary: 0, tax: 0, afterTax: 0 });
 
@@ -22,6 +23,16 @@ const Salary = () => {
     }
   }, [search]);
 
+  useEffect(() => {
+      const numSalary = parseInt(salary);
+
+    if (numSalary == NaN) {
+        setIsValid(false);
+    } else {
+        setIsValid(numSalary > 0);
+    }
+  }, [salary]);
+
   return (
     <Layout title="Endast lön">
       <YearAndTableSelection
@@ -33,10 +44,11 @@ const Salary = () => {
       <InputField
         label={"Lön"}
         value={salary}
-        onValueChanged={e => setSalary(parseInt(e.target.value, 10))}
+        onValueChanged={e => setSalary(e.target.value)}
       />
       <button
         className="button is-primary is-pulled-right"
+        disabled={!isValid}
         onClick={() => setSearch({ salary, taxTable, year })}
       >
         Beräkna
