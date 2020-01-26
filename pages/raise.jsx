@@ -9,6 +9,9 @@ const Benefit = () => {
   const [raised, setRaised] = useState(0);
   const [taxTable, setTaxTable] = useState(33);
   const [year, setYear] = useState(new Date().getFullYear());
+  const [isValid, setIsValid] = useState(true);
+  const [validationMessage, setValidationMessage] = useState('');
+  const [raisedValidationMessage, setRaisedValidationMessage] = useState('');
   const [search, setSearch] = useState(null);
   const [result, setResult] = useState(null);
 
@@ -16,7 +19,7 @@ const Benefit = () => {
     const fetchResult = async () => {
       const current = await api.fetchTaxAmount(salary, taxTable, year);
       const newTax = await api.fetchTaxAmount(raised, taxTable, year);
-      
+
       setResult({
         ...newTax,
         netRaise: newTax.afterTax - current.afterTax
@@ -28,6 +31,31 @@ const Benefit = () => {
     }
   }, [search]);
 
+  useEffect(() => {
+    const numSalary = parseInt(salary, 10);
+    let salaryIsValid = false;
+
+    if (isNaN(numSalary)) {
+      salaryIsValid = false;
+      setValidationMessage("Nuvarande lön måste bestå av siffror");
+    } else {
+      salaryIsValid = numSalary > 0;
+      setValidationMessage(
+        numSalary <= 0 ? "Nuvarande lön måste vara större än noll" : ""
+      );
+    }
+
+    const numRaised = parseInt(raised, 10);
+
+    if (isNaN(numRaised)) {
+      setIsValid(false);
+      setRaisedValidationMessage('Ny lön måste bestå av sifror');
+    } else {
+      setIsValid(salaryIsValid && numRaised > 0);
+      setRaisedValidationMessage(salaryIsValid && numRaised > 0 ? '' : 'Ny lön måste vara större än noll');
+    }
+  }, [salary, raised]);
+
   return (
     <Layout title="Vid löneförhöjning">
       <YearAndTableSelection
@@ -37,17 +65,20 @@ const Benefit = () => {
         onTableChanged={e => setTaxTable(e.target.value)}
       />
       <InputField
-        label={"Nuvarande ön"}
+        label={"Nuvarande lön"}
         value={salary}
-        onValueChanged={e => setSalary(parseInt(e.target.value, 10))}
+        validationMessage={validationMessage}
+        onValueChanged={e => setSalary(e.target.value)}
       />
       <InputField
         label={"Ny lön"}
         value={raised}
-        onValueChanged={e => setRaised(parseInt(e.target.value, 10))}
+        validationMessage={raisedValidationMessage}
+        onValueChanged={e => setRaised(e.target.value)}
       />
       <button
         className="button is-primary is-pulled-right"
+        disabled={!isValid}
         onClick={() => setSearch({ salary, taxTable, year, benefit: raised })}
       >
         Beräkna
@@ -56,7 +87,7 @@ const Benefit = () => {
         <p>Lön: {result ? result.salary : ""}</p>
         <p>Skatt: {result ? result.taxAmount : ""}</p>
         <p>Nettolön: {result ? result.afterTax : ""}</p>
-        <p>Nettoökning: {result ? result.netRaise : ''}</p>
+        <p>Nettoökning: {result ? result.netRaise : ""}</p>
       </div>
     </Layout>
   );

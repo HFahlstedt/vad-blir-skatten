@@ -13,6 +13,7 @@ const InputField = props => (
             onChange={e => props.onValueChanged(e)}
           />
         </div>
+        <p className={`help is-danger ${props.validationMessage === '' ? 'is-hidden' : ''}`}>{props.validationMessage}</p>
       </div>
     </div>
   </div>
