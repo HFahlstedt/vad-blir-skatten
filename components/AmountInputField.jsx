@@ -1,4 +1,4 @@
-const InputField = props => (
+const AmountInputField = props => (
   <div className="field is-horizontal">
     <div className="field-label is-normal">
       <label className="label">{props.label}</label>
@@ -19,4 +19,4 @@ const InputField = props => (
   </div>
 );
 
-export default InputField;
+export default AmountInputField;

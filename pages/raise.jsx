@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
 import Layout from "../components/Layout";
-import InputField from "../components/InputField";
+import AmountInputField from "../components/AmountInputField";
 import YearAndTableSelection from "../components/YearAndTableSelection";
 
 const Benefit = () => {
@@ -64,13 +64,13 @@ const Benefit = () => {
         table={taxTable}
         onTableChanged={e => setTaxTable(e.target.value)}
       />
-      <InputField
+      <AmountInputField
         label={"Nuvarande lön"}
         value={salary}
         validationMessage={validationMessage}
         onValueChanged={e => setSalary(e.target.value)}
       />
-      <InputField
+      <AmountInputField
         label={"Ny lön"}
         value={raised}
         validationMessage={raisedValidationMessage}
