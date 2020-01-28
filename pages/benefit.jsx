@@ -9,9 +9,9 @@ const Benefit = () => {
   const [benefit, setBenefit] = useState(0);
   const [taxTable, setTaxTable] = useState(33);
   const [year, setYear] = useState(new Date().getFullYear());
-  const [isValid, setIsValid] = useState(true);
-  const [validationMessage, setValidationMessage] = useState('');
-  const [benefitValidationMessage, setBenefitValidationMessage] = useState('');
+  const [isValid, setIsValid] = useState(false);
+  const [isSalaryValid, setIsSalaryValid] = useState(false);
+  const [isBenefitValid, setIsBenefitValid] = useState(false);
   const [search, setSearch] = useState(null);
   const [result, setResult] = useState(null);
 
@@ -35,30 +35,9 @@ const Benefit = () => {
   }, [search]);
 
   useEffect(() => {
-    const numSalary = parseInt(salary, 10);
-    let salaryIsValid = false;
-
-    if (isNaN(numSalary)) {
-      salaryIsValid = false;
-      setValidationMessage("Lön måste bestå av siffror");
-    } else {
-      salaryIsValid = numSalary > 0;
-      setValidationMessage(
-        numSalary <= 0 ? "Lön måste vara större än noll" : ""
-      );
-    }
-
-    const numBenefit = parseInt(benefit, 10);
-
-    if (isNaN(numBenefit)) {
-      setIsValid(false);
-      setBenefitValidationMessage('Förmån måste bestå av sifror');
-    } else {
-      setIsValid(salaryIsValid && numBenefit > 0);
-      setBenefitValidationMessage(salaryIsValid && numBenefit > 0 ? '' : 'Förmån måste vara större än noll');
-    }
-  }, [salary, benefit]);
-
+    setIsValid(isSalaryValid && isBenefitValid);
+  }, [isSalaryValid, isBenefitValid]);
+  
   return (
     <Layout title="Med förmån">
       <YearAndTableSelection
@@ -70,14 +49,14 @@ const Benefit = () => {
       <AmountInputField
         label={"Lön"}
         value={salary}
-        validationMessage={validationMessage}
-        onValueChanged={e => setSalary(parseInt(e.target.value, 10))}
+        onValueChanged={value => setSalary(value)}
+        onValidate={valid => setIsSalaryValid(valid)}
       />
       <AmountInputField
         label={"Förmån"}
         value={benefit}
-        validationMessage={benefitValidationMessage}
-        onValueChanged={e => setBenefit(parseInt(e.target.value, 10))}
+        onValueChanged={value => setBenefit(value)}
+        onValidate={valid => setIsBenefitValid(valid)}
       />
       <button
         className="button is-primary is-pulled-right"

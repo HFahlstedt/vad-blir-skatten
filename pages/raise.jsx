@@ -9,9 +9,9 @@ const Benefit = () => {
   const [raised, setRaised] = useState(0);
   const [taxTable, setTaxTable] = useState(33);
   const [year, setYear] = useState(new Date().getFullYear());
-  const [isValid, setIsValid] = useState(true);
-  const [validationMessage, setValidationMessage] = useState('');
-  const [raisedValidationMessage, setRaisedValidationMessage] = useState('');
+  const [isValid, setIsValid] = useState(false);
+  const [isSalaryValid, setIsSalaryValid] = useState(false);
+  const [isRaisedValid, setIsRaisedValid] = useState(false);
   const [search, setSearch] = useState(null);
   const [result, setResult] = useState(null);
 
@@ -32,29 +32,8 @@ const Benefit = () => {
   }, [search]);
 
   useEffect(() => {
-    const numSalary = parseInt(salary, 10);
-    let salaryIsValid = false;
-
-    if (isNaN(numSalary)) {
-      salaryIsValid = false;
-      setValidationMessage("Nuvarande lön måste bestå av siffror");
-    } else {
-      salaryIsValid = numSalary > 0;
-      setValidationMessage(
-        numSalary <= 0 ? "Nuvarande lön måste vara större än noll" : ""
-      );
-    }
-
-    const numRaised = parseInt(raised, 10);
-
-    if (isNaN(numRaised)) {
-      setIsValid(false);
-      setRaisedValidationMessage('Ny lön måste bestå av sifror');
-    } else {
-      setIsValid(salaryIsValid && numRaised > 0);
-      setRaisedValidationMessage(salaryIsValid && numRaised > 0 ? '' : 'Ny lön måste vara större än noll');
-    }
-  }, [salary, raised]);
+    setIsValid(isSalaryValid && isRaisedValid);
+  }, [isSalaryValid, isRaisedValid]);
 
   return (
     <Layout title="Vid löneförhöjning">
@@ -67,14 +46,14 @@ const Benefit = () => {
       <AmountInputField
         label={"Nuvarande lön"}
         value={salary}
-        validationMessage={validationMessage}
-        onValueChanged={e => setSalary(e.target.value)}
+        onValueChanged={value => setSalary(value)}
+        onValidate={valid => setIsSalaryValid(valid)}  
       />
       <AmountInputField
         label={"Ny lön"}
         value={raised}
-        validationMessage={raisedValidationMessage}
-        onValueChanged={e => setRaised(e.target.value)}
+        onValueChanged={value => setRaised(value)}
+        onValidate={valid => setIsRaisedValid(valid)}
       />
       <button
         className="button is-primary is-pulled-right"

@@ -9,7 +9,6 @@ const Salary = () => {
   const [taxTable, setTaxTable] = useState(33);
   const [year, setYear] = useState(new Date().getFullYear());
   const [isValid, setIsValid] = useState(true);
-  const [validationMessage, setValidationMessage] = useState('');
   const [search, setSearch] = useState({ salary, taxTable, year });
   const [result, setResult] = useState({ salary: 0, tax: 0, afterTax: 0 });
 
@@ -24,18 +23,6 @@ const Salary = () => {
     }
   }, [search]);
 
-  useEffect(() => {
-      const numSalary = parseInt(salary, 10);
-
-    if (isNaN(numSalary)) {
-        setIsValid(false);
-        setValidationMessage('Lön måste bestå av siffror');
-    } else {
-        setIsValid(numSalary > 0);
-        setValidationMessage(numSalary <= 0 ? 'Lön måste vara större än noll' : '');
-    }
-  }, [salary]);
-
   return (
     <Layout title="Endast lön">
       <YearAndTableSelection
@@ -47,8 +34,8 @@ const Salary = () => {
       <AmountInputField
         label={"Lön"}
         value={salary}
-        validationMessage={validationMessage}
-        onValueChanged={e => setSalary(e.target.value)}
+        onValueChanged={v => setSalary(v)}
+        onValidate={setIsValid}
       />
       <button
         className="button is-primary is-pulled-right"
