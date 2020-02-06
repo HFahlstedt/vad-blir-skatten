@@ -3,6 +3,7 @@ import api from "../services/api";
 import Layout from "../components/Layout";
 import AmountInputField from "../components/AmountInputField";
 import YearAndTableSelection from "../components/YearAndTableSelection";
+import Result from "../components/Result";
 
 const Benefit = () => {
   const [salary, setSalary] = useState(0);
@@ -20,10 +21,14 @@ const Benefit = () => {
       const current = await api.fetchTaxAmount(salary, taxTable, year);
       const newTax = await api.fetchTaxAmount(raised, taxTable, year);
 
-      setResult({
-        ...newTax,
-        netRaise: newTax.afterTax - current.afterTax
-      });
+      let key = 0;
+      const rows = [];
+      rows.push({ key: key++, label: 'Lön', amount: newTax.salary });
+      rows.push({ key: key++, label: 'Skatt', amount: newTax.taxAmount, isTax: true });
+      rows.push({ key: key++, label: 'Nettolön', amount: newTax.afterTax, isSum: true });
+      rows.push({ key: key++, label: 'Nettoökning', amount: newTax.afterTax - current.afterTax });
+
+      setResult(rows);
     };
 
     if (salary > 0) {
@@ -62,12 +67,7 @@ const Benefit = () => {
       >
         Beräkna
       </button>
-      <div className="section">
-        <p>Lön: {result ? result.salary : ""}</p>
-        <p>Skatt: {result ? result.taxAmount : ""}</p>
-        <p>Nettolön: {result ? result.afterTax : ""}</p>
-        <p>Nettoökning: {result ? result.netRaise : ""}</p>
-      </div>
+      <Result resultRows={result}/>
     </Layout>
   );
 };

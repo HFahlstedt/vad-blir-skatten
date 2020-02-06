@@ -3,6 +3,7 @@ import api from "../services/api";
 import Layout from "../components/Layout";
 import YearAndTableSelection from "../components/YearAndTableSelection";
 import AmountInputField from "../components/AmountInputField";
+import Result from "../components/Result";
 
 const Salary = () => {
   const [salary, setSalary] = useState(0);
@@ -10,12 +11,20 @@ const Salary = () => {
   const [year, setYear] = useState(new Date().getFullYear());
   const [isValid, setIsValid] = useState(true);
   const [search, setSearch] = useState({ salary, taxTable, year });
-  const [result, setResult] = useState({ salary: 0, tax: 0, afterTax: 0 });
+  const [result, setResult] = useState([]);
 
   useEffect(() => {
     const fetchResult = async () => {
       const fetchedData = await api.fetchTaxAmount(salary, taxTable, year);
-      setResult(fetchedData);
+
+      let key = 0;
+      const rows = [];
+
+      rows.push({ key: key++, label: 'Lön', amount: fetchedData.salary });
+      rows.push({ key: key++, label: 'Skatt', amount: fetchedData.taxAmount, isTax: true });
+      rows.push({ key: key++, label: 'Nettolön', amount: fetchedData.afterTax, isSum: true });   
+
+      setResult(rows);
     };
 
     if (salary > 0) {
@@ -44,11 +53,7 @@ const Salary = () => {
       >
         Beräkna
       </button>
-      <div className="section">
-        <p>Lön: {result.salary}</p>
-        <p>Skatt: {result.taxAmount}</p>
-        <p>Nettolön: {result.afterTax}</p>
-      </div>
+      <Result resultRows={result}/>
     </Layout>
   );
 };

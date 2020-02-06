@@ -3,6 +3,7 @@ import api from "../services/api";
 import Layout from "../components/Layout";
 import AmountInputField from "../components/AmountInputField";
 import YearAndTableSelection from "../components/YearAndTableSelection";
+import Result from "../components/Result";
 
 const Benefit = () => {
   const [salary, setSalary] = useState(0);
@@ -20,13 +21,16 @@ const Benefit = () => {
       const withoutBenefit = await api.fetchTaxAmount(salary, taxTable, year);
       const fetchedData = await api.fetchTaxAmount(salary+benefit, taxTable, year);
       
-      setResult({
-        ...withoutBenefit,
-        taxAmount: fetchedData.taxAmount,
-        afterTax: salary - fetchedData.taxAmount,
-        benefit,
-        cost: fetchedData.afterTax - withoutBenefit.afterTax 
-      });
+      let key = 0;
+      const rows = [];
+
+      rows.push({ key: key++, label: 'Lön', amount: withoutBenefit.salary});
+      rows.push({ key: key++, label: 'Skatt', amount: fetchedData.taxAmount, istax: true });
+      rows.push({ key: key++, label: 'Förmån', amount: benefit });
+      rows.push({ key: key++, label: 'Nettolön', amount: salary - fetchedData.taxAmount, isSum: true });
+      rows.push({ key: key++, label: 'Nettokostnad förmån', amount: fetchedData.afterTax - withoutBenefit.afterTax });
+
+      setResult(rows);
     };
 
     if (salary > 0) {
@@ -37,7 +41,7 @@ const Benefit = () => {
   useEffect(() => {
     setIsValid(isSalaryValid && isBenefitValid);
   }, [isSalaryValid, isBenefitValid]);
-  
+
   return (
     <Layout title="Med förmån">
       <YearAndTableSelection
@@ -65,13 +69,7 @@ const Benefit = () => {
       >
         Beräkna
       </button>
-      <div className="section">
-        <p>Lön: {result ? result.salary : ""}</p>
-        <p>Skatt: {result ? result.taxAmount : ""}</p>
-        <p>Förmån: {result ? result.benefit : ""}</p>
-        <p>Nettolön: {result ? result.afterTax : ""}</p>
-        <p>Kostnad för förmån: {result ? result.cost : ''}</p>
-      </div>
+      <Result resultRows={result}/>
     </Layout>
   );
 };
