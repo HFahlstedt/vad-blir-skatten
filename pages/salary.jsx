@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import api from "../services/api";
-import Layout from "../components/Layout";
-import YearAndTableSelection from "../components/YearAndTableSelection";
-import AmountInputField from "../components/AmountInputField";
-import Result from "../components/Result";
+import { useState, useEffect } from 'react';
+import api from '../services/api';
+import Layout from '../components/Layout';
+import YearAndTableSelection from '../components/YearAndTableSelection';
+import AmountInputField from '../components/AmountInputField';
+import Result from '../components/Result';
 
 const Salary = () => {
   const [salary, setSalary] = useState(0);
@@ -21,8 +21,18 @@ const Salary = () => {
       const rows = [];
 
       rows.push({ key: key++, label: 'Lön', amount: fetchedData.salary });
-      rows.push({ key: key++, label: 'Skatt', amount: fetchedData.taxAmount, isTax: true });
-      rows.push({ key: key++, label: 'Nettolön', amount: fetchedData.afterTax, isSum: true });   
+      rows.push({
+        key: key++,
+        label: 'Skatt',
+        amount: fetchedData.taxAmount,
+        isTax: true,
+      });
+      rows.push({
+        key: key++,
+        label: 'Nettolön',
+        amount: fetchedData.afterTax,
+        isSum: true,
+      });
 
       setResult(rows);
     };
@@ -41,7 +51,7 @@ const Salary = () => {
         onTableChanged={e => setTaxTable(e.target.value)}
       />
       <AmountInputField
-        label={"Lön"}
+        label={'Lön'}
         value={salary}
         onValueChanged={v => setSalary(v)}
         onValidate={setIsValid}
@@ -49,11 +59,10 @@ const Salary = () => {
       <button
         className="button is-primary is-pulled-right"
         disabled={!isValid}
-        onClick={() => setSearch({ salary, taxTable, year })}
-      >
+        onClick={() => setSearch({ salary, taxTable, year })}>
         Beräkna
       </button>
-      <Result resultRows={result}/>
+      <Result resultRows={result} />
     </Layout>
   );
 };

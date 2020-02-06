@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "export": "next build && next export",
+    "check": "prettier --check **/*.jsx",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -22,5 +23,8 @@
     "node-sass": "^4.13.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"
+  },
+  "devDependencies": {
+    "prettier": "1.19.1"
   }
 }

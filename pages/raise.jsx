@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import api from "../services/api";
-import Layout from "../components/Layout";
-import AmountInputField from "../components/AmountInputField";
-import YearAndTableSelection from "../components/YearAndTableSelection";
-import Result from "../components/Result";
+import { useState, useEffect } from 'react';
+import api from '../services/api';
+import Layout from '../components/Layout';
+import AmountInputField from '../components/AmountInputField';
+import YearAndTableSelection from '../components/YearAndTableSelection';
+import Result from '../components/Result';
 
 const Benefit = () => {
   const [salary, setSalary] = useState(0);
@@ -24,9 +24,23 @@ const Benefit = () => {
       let key = 0;
       const rows = [];
       rows.push({ key: key++, label: 'Lön', amount: newTax.salary });
-      rows.push({ key: key++, label: 'Skatt', amount: newTax.taxAmount, isTax: true });
-      rows.push({ key: key++, label: 'Nettolön', amount: newTax.afterTax, isSum: true });
-      rows.push({ key: key++, label: 'Nettoökning', amount: newTax.afterTax - current.afterTax });
+      rows.push({
+        key: key++,
+        label: 'Skatt',
+        amount: newTax.taxAmount,
+        isTax: true,
+      });
+      rows.push({
+        key: key++,
+        label: 'Nettolön',
+        amount: newTax.afterTax,
+        isSum: true,
+      });
+      rows.push({
+        key: key++,
+        label: 'Nettoökning',
+        amount: newTax.afterTax - current.afterTax,
+      });
 
       setResult(rows);
     };
@@ -49,13 +63,13 @@ const Benefit = () => {
         onTableChanged={e => setTaxTable(e.target.value)}
       />
       <AmountInputField
-        label={"Nuvarande lön"}
+        label={'Nuvarande lön'}
         value={salary}
         onValueChanged={value => setSalary(value)}
-        onValidate={valid => setIsSalaryValid(valid)}  
+        onValidate={valid => setIsSalaryValid(valid)}
       />
       <AmountInputField
-        label={"Ny lön"}
+        label={'Ny lön'}
         value={raised}
         onValueChanged={value => setRaised(value)}
         onValidate={valid => setIsRaisedValid(valid)}
@@ -63,11 +77,10 @@ const Benefit = () => {
       <button
         className="button is-primary is-pulled-right"
         disabled={!isValid}
-        onClick={() => setSearch({ salary, taxTable, year, benefit: raised })}
-      >
+        onClick={() => setSearch({ salary, taxTable, year, benefit: raised })}>
         Beräkna
       </button>
-      <Result resultRows={result}/>
+      <Result resultRows={result} />
     </Layout>
   );
 };

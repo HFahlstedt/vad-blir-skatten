@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 const AmountInputField = props => {
   const [value, setValue] = useState(props.value);
@@ -15,7 +15,7 @@ const AmountInputField = props => {
       setValidationMessage(`${props.label} måste vara större än noll.`);
     } else {
       valid = true;
-      props.onValueChanged(numValue)
+      props.onValueChanged(numValue);
     }
     setIsValid(valid);
     props.onValidate(valid);
@@ -36,11 +36,13 @@ const AmountInputField = props => {
               onChange={e => setValue(e.target.value)}
             />
           </div>
-          <p className={`help is-danger ${isValid ? 'is-hidden' : ''}`}>{validationMessage}</p>
+          <p className={`help is-danger ${isValid ? 'is-hidden' : ''}`}>
+            {validationMessage}
+          </p>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default AmountInputField;

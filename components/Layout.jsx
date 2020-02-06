@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import Header from '../components/Header';
 
-import "../styles/main.scss";
+import '../styles/main.scss';
 
 const Layout = props => (
   <div>
-    <Header/>
+    <Header />
     <section className="section">
       <div className="container">
         <h1 className="title">{props.title}</h1>
