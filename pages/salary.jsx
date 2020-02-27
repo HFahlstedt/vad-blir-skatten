@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import api from '../services/api';
 import Layout from '../components/Layout';
+import { withRedux } from '../lib/redux';
 import YearAndTableSelection from '../components/YearAndTableSelection';
 import AmountInputField from '../components/AmountInputField';
 import Result from '../components/Result';
 
 const Salary = () => {
+  const { year, taxTable } = useSelector(state => ({
+    year: state.year,
+    taxTable: state.table,
+  }));
+
   const [salary, setSalary] = useState(0);
-  const [taxTable, setTaxTable] = useState(33);
-  const [year, setYear] = useState(new Date().getFullYear());
   const [isValid, setIsValid] = useState(true);
   const [search, setSearch] = useState({ salary, taxTable, year });
   const [result, setResult] = useState([]);
@@ -44,12 +49,7 @@ const Salary = () => {
 
   return (
     <Layout title="Endast lön">
-      <YearAndTableSelection
-        year={year}
-        onYearChanged={e => setYear(e.target.value)}
-        table={taxTable}
-        onTableChanged={e => setTaxTable(e.target.value)}
-      />
+      <YearAndTableSelection />
       <AmountInputField
         label={'Lön'}
         value={salary}
@@ -67,4 +67,4 @@ const Salary = () => {
   );
 };
 
-export default Salary;
+export default withRedux(Salary);

@@ -1,8 +1,32 @@
 import { Fragment } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
+const useTableAndYear = () => {
+  const { year, table, availableYears, availableTables } = useSelector(
+    state => ({
+      availableYears: state.availableYears,
+      availableTables: state.availableTables,
+      year: state.year,
+      table: state.table,
+    })
+  );
+  const dispatch = useDispatch();
+
+  const setYear = year => dispatch({ type: 'SET_YEAR', payload: year });
+  const setTable = table => dispatch({ type: 'SET_TABLE', payload: table });
+
+  return { availableYears, availableTables, year, table, setYear, setTable };
+};
 
 const YearAndTableSelection = props => {
-  const tableNumbers = [29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40];
-  const years = [2016, 2017, 2018, 2019, 2020];
+  const {
+    availableYears,
+    availableTables,
+    year,
+    table,
+    setYear,
+    setTable,
+  } = useTableAndYear();
 
   return (
     <Fragment>
@@ -12,8 +36,8 @@ const YearAndTableSelection = props => {
         </div>
         <div className="control">
           <div className="select is-small">
-            <select value={props.year} onChange={e => props.onYearChanged(e)}>
-              {years.map(y => (
+            <select value={year} onChange={e => setYear(e.target.value)}>
+              {availableYears.map(y => (
                 <option key={y} value={y}>
                   {y}
                 </option>
@@ -28,8 +52,8 @@ const YearAndTableSelection = props => {
         </div>
         <div className="control">
           <div className="select is-small">
-            <select value={props.table} onChange={e => props.onTableChanged(e)}>
-              {tableNumbers.map(t => (
+            <select value={table} onChange={e => setTable(e.target.value)}>
+              {availableTables.map(t => (
                 <option key={t} value={t}>
                   {t}
                 </option>
