@@ -1,15 +1,20 @@
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import api from '../services/api';
+import { withRedux } from '../lib/redux';
 import Layout from '../components/Layout';
 import AmountInputField from '../components/AmountInputField';
 import YearAndTableSelection from '../components/YearAndTableSelection';
 import Result from '../components/Result';
 
 const Benefit = () => {
+  const { year, taxTable } = useSelector(state => ({
+    year: state.year,
+    taxTable: state.table,
+  }));
+
   const [salary, setSalary] = useState(0);
   const [benefit, setBenefit] = useState(0);
-  const [taxTable, setTaxTable] = useState(33);
-  const [year, setYear] = useState(new Date().getFullYear());
   const [isValid, setIsValid] = useState(false);
   const [isSalaryValid, setIsSalaryValid] = useState(false);
   const [isBenefitValid, setIsBenefitValid] = useState(false);
@@ -66,12 +71,7 @@ const Benefit = () => {
 
   return (
     <Layout title="Med förmån">
-      <YearAndTableSelection
-        year={year}
-        onYearChanged={e => setYear(e.target.value)}
-        table={taxTable}
-        onTableChanged={e => setTaxTable(e.target.value)}
-      />
+      <YearAndTableSelection />
       <AmountInputField
         label={'Lön'}
         value={salary}
@@ -95,4 +95,4 @@ const Benefit = () => {
   );
 };
 
-export default Benefit;
+export default withRedux(Benefit);
